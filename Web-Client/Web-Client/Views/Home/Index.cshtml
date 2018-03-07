@@ -35,12 +35,23 @@
                     zoom: 13,
                     center: uluru[0]
                 });
+
                 for (var i = 0; i < uluru.length; i++) {
                     var marker = new google.maps.Marker({
                         position: uluru[i],
                         map: map
                     });
                 }
+
+                var paths = new google.maps.Polyline({
+                    path: uluru,
+                    geodesic: true,
+                    strokeColor: '#FF0000',
+                    strokeOpacity: 1.0,
+                    strokeWeight: 2
+                });
+
+                paths.setMap(map);
                 
             }
         </script>
