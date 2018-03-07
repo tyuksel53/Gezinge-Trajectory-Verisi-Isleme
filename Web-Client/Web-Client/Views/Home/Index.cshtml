@@ -17,74 +17,33 @@
             <div class="alert-warning" id="fileUploadLoading" style="display: none">
                 <p> <i class="	glyphicon glyphicon-refresh"></i>  <strong>Yükleniyor </strong> </p>
             </div>
-            @using (Html.BeginForm("getLatLong", "Home",FormMethod.Post,new { id="dosyaYukle", enctype = "multipart/form-data" }))
+            @using (Html.BeginForm("getLatLong", "Home", FormMethod.Post, new { id = "dosyaYukle", enctype = "multipart/form-data" }))
             {
                 <b>Dosya Seçin </b>
                 <input style="margin-top: 15px" id="uploadFile" name="uploadFile" class="form-control" type="file">
-                <input type="submit" id="btnFileUpload" name="btnFileUpload" style="margin-top: 15px" class="btn btn-primary">
+                <input type="submit" id="btnFileUpload" name="btnFileUpload" value="Dosyadan Oku" style="margin-top: 15px" class="btn btn-primary">
             }
         </div>
     </div>
 </div>
 <div class="row">
     <div class="col-md-6">
+        <h4 class="text-danger">Ham Veri</h4>
         <div id="map"></div>
-        <script>
-            function initMap(uluru) {
-                var map = new google.maps.Map(document.getElementById('map'), {
-                    zoom: 13,
-                    center: uluru[0]
-                });
-
-                for (var i = 0; i < uluru.length; i++) {
-                    var marker = new google.maps.Marker({
-                        position: uluru[i],
-                        map: map
-                    });
-                }
-
-                var paths = new google.maps.Polyline({
-                    path: uluru,
-                    geodesic: true,
-                    strokeColor: '#FF0000',
-                    strokeOpacity: 1.0,
-                    strokeWeight: 2
-                });
-
-                paths.setMap(map);
-                
-            }
-        </script>
-        <script async defer
-                src="https://maps.googleapis.com/maps/api/js?key=AIzaSyD6tfy97IexWdf_-9NrtJqQN2cPQvLzkgA">
-        </script>
     </div>
-
     <div class="col-md-6">
-
+        <h4 class="text-success">İndirgenmiş Veri </h4>
     </div>
 
 </div>
 
 @section scripts
 {
-    <script src="~/Scripts/jquery.form.min.js"></script>
-    <script>
-
-        $("#dosyaYukle").ajaxForm({
-            beforeSend: function() {
-                $("#fileUploadLoading").show();
-            },
-            complete: function (xhr) {
-                console.log(xhr);
-                console.log(xhr.responseJSON);
-                $("#fileUploadLoading").hide();
-                initMap(JSON.parse(xhr.responseJSON));
-            }
-
-        });
-        $(document).ready(function () {
-
-        });
+    <script async defer
+            src="https://maps.googleapis.com/maps/api/js?key=AIzaSyD6tfy97IexWdf_-9NrtJqQN2cPQvLzkgA">
     </script>
+
+    <script src="~/Scripts/jquery.form.min.js"></script>
+
+    <script src="~/Scripts/indexJs.js"></script>
 }
