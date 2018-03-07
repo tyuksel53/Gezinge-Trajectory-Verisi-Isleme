@@ -17,11 +17,6 @@ namespace Web_Api
             EnableCorsAttribute cors = new EnableCorsAttribute("*","*","*");
             config.EnableCors(cors);
 
-            config.Formatters.Remove(config.Formatters.XmlFormatter);
-            config.Formatters.Remove(config.Formatters.JsonFormatter);
-
-            config.Formatters.Add(new MyJsonFormat() );
-
             config.Routes.MapHttpRoute(
                 name: "DefaultApi",
                 routeTemplate: "{controller}/{action}/{id}",

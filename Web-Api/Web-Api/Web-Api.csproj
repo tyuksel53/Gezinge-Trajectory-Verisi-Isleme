@@ -97,8 +97,8 @@
       <DependentUpon>Global.asax</DependentUpon>
     </Compile>
     <Compile Include="Models\Coordinates.cs" />
-    <Compile Include="MyJsonFormat.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
+    <Compile Include="VeriIndirge.cs" />
   </ItemGroup>
   <ItemGroup>
     <None Include="packages.config" />

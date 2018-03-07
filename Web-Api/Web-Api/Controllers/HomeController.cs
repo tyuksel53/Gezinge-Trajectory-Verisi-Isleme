@@ -23,8 +23,9 @@ namespace Web_Api.Controllers
             return Request.CreateResponse(HttpStatusCode.OK, kads );
         }
 
+
         [HttpPost]
-        public HttpResponseMessage Bok([FromBody]string data)
+        public HttpResponseMessage DataSimplify([FromBody]string data)
         {
             List<Coordinates> coordinates = new List<Coordinates>();
 
@@ -48,7 +49,9 @@ namespace Web_Api.Controllers
                 coordinates.Add(coordinate);
             }
 
-            return Request.CreateResponse(HttpStatusCode.OK,coordinates.Count);
+            var simplifiedData = VeriIndirge.SimplifyLine(coordinates, 1);
+
+            return Request.CreateResponse(HttpStatusCode.OK, simplifiedData);
         }
     }
 }
