@@ -14,14 +14,8 @@ namespace Web_Api.Controllers
     {
         public static QuadTree hamRoot = null;
         public static QuadTree IndirgenmisRoot = null;
-
-        [HttpGet]
-        public HttpResponseMessage Tarih()
-        {
-
-            return Request.CreateResponse(HttpStatusCode.OK, DateTime.Now.ToString("dd-MM-yyyy"));
-        }
-
+        public static List<Coordinates> HamArananlar = null;
+        public static List<Coordinates> IndirgenmisArananlar = null;
 
         [HttpPost]
         public HttpResponseMessage DataSimplify([FromBody]string data)
@@ -39,6 +33,7 @@ namespace Web_Api.Controllers
         [HttpPost]
         public HttpResponseMessage AramaHam([FromBody]string data)
         {
+            HamArananlar = new List<Coordinates>();
             hamRoot = null;
 
             List<Coordinates> coordinates = JsonArrayParse("kordinatlar", data);
@@ -48,16 +43,18 @@ namespace Web_Api.Controllers
 
             for (int i = 0; i < coordinates.Count; i++)
             {
-                Insert(coordinates[i],true);
+                Insert(coordinates[i], isHamRoot:true);
             }
 
-            return Request.CreateResponse(HttpStatusCode.OK, "basarili");
+            HamSearch(hamRoot, limits);
+
+            return Request.CreateResponse(HttpStatusCode.OK, HamArananlar);
         }
 
         [HttpPost]
         public HttpResponseMessage AramaIndirgenmis([FromBody]string data)
         {
-
+            IndirgenmisArananlar = new List<Coordinates>();
             IndirgenmisRoot = null;
             List<Coordinates> coordinates = JsonArrayParse("kordinatlar", data);
             string limit = JsonParseSingleProperty("limit", data);
@@ -69,7 +66,9 @@ namespace Web_Api.Controllers
                 Insert(coordinates[i], isHamRoot:false);
             }
 
-            return Request.CreateResponse(HttpStatusCode.OK, "basarili");
+            IndirgenmisSearch(IndirgenmisRoot,limits);
+
+            return Request.CreateResponse(HttpStatusCode.OK, IndirgenmisArananlar);
         }
 
         private string JsonParseSingleProperty(string token,string data)
@@ -146,6 +145,7 @@ namespace Web_Api.Controllers
                 if (IndirgenmisRoot == null)
                 {
                     IndirgenmisRoot = newQuadTreeNode;
+                    return;
                 }
 
                 current = IndirgenmisRoot;
@@ -189,6 +189,40 @@ namespace Web_Api.Controllers
                     }
                 }
             }
+        }
+
+        private void HamSearch(QuadTree node,double[] limits)
+        {
+            if (node != null)
+            {
+                if (limits[0] > node.lat && limits[1] > node.lng && limits[2] < node.lat && limits[3] < node.lng)
+                {
+                    HamArananlar.Add(new Coordinates(node.lat,node.lng));
+                }
+
+                HamSearch(node.Qtx1y1,limits);
+                HamSearch(node.Qtx1y2, limits);
+                HamSearch(node.Qtx2y1, limits);
+                HamSearch(node.Qtx2y2, limits);
+            }
+
+        }
+
+        private void IndirgenmisSearch(QuadTree node, double[] limits)
+        {
+            if (node != null)
+            {
+                if (limits[0] > node.lat && limits[1] > node.lng && limits[2] < node.lat && limits[3] < node.lng)
+                {
+                    IndirgenmisArananlar.Add(new Coordinates(node.lat, node.lng));
+                }
+
+                IndirgenmisSearch(node.Qtx1y1, limits);
+                IndirgenmisSearch(node.Qtx1y2, limits);
+                IndirgenmisSearch(node.Qtx2y1, limits);
+                IndirgenmisSearch(node.Qtx2y2, limits);
+            }
+
         }
     }
 

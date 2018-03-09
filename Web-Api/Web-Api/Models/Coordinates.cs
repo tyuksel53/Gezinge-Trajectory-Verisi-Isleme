@@ -9,5 +9,16 @@ namespace Web_Api.Models
     {
         public double lat { get; set; }
         public double lng { get; set; }
+
+        public Coordinates()
+        {
+
+        }
+
+        public Coordinates(double lat, double lng)
+        {
+            this.lng = lng;
+            this.lat = lat;
+        }
     }
 }

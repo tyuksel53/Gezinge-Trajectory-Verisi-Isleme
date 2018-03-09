@@ -12,6 +12,14 @@
         height: 400px;
         width: 100%;
     }
+    #hamAramaMap {
+        height: 400px;
+        width: 100%;
+    }
+    #indirgenmisAramaMap {
+        height: 400px;
+        width: 100%;
+    }
 </style>
 
 
@@ -44,13 +52,27 @@
         <h4 class="text-danger">Ham Veri</h4>
         <div id="hamMap"></div>
         <button class="btn btn-success" id="btnHamVeriArama" style="float: right; margin-top: 15px"> Ham veri arama</button>
+        <div class="row">
+            <div class="col-md-12" id="hamAramaSonucu" style="display: none">
+                <h4 class="text-success">Ham Veri Arama Sonuçları</h4>
+                <div id="hamAramaMap"></div>
+            </div>
+        </div>
     </div>
 
     <div class="col-md-6" id="divIndirgenmisSection" style="display: none">
-        <h4 class="text-success">İndirgenmiş Veri </h4>
+        <h4 class="text-danger">İndirgenmiş Veri </h4>
         <div id="indirgenmisMap"></div>
         <button class="btn btn-success" id="btnİndirgenmisVeriArama" style="float: right; margin-top: 15px"> İndirgenmis veri arama</button>
+        <div class="row">
+            <div class="col-md-12" id="indirgenmisAramaSonucu" style="display: none">
+                <h4 class="text-success">İndirgenmiş Veri AramaSonuçları</h4>
+                <div id="indirgenmisAramaMap"></div>
+            </div>
+        </div>
     </div>
+
+
 
 </div>
 

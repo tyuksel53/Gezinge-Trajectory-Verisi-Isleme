@@ -127,6 +127,23 @@ function initHamMap(uluru) {
 
 }
 
+function initIndirgenmisAramaMap(uluru) {
+
+    var map = new google.maps.Map(document.getElementById('indirgenmisAramaMap'), {
+        zoom: 3,
+        center: uluru[Math.floor((uluru.length) / 2)]
+    });
+
+    for (var i = 0; i < uluru.length; i++) {
+        var marker = new google.maps.Marker({
+            position: uluru[i],
+            map: map
+        });
+    }
+
+    $("#indirgenmisAramaSonucu").fadeIn(1000);
+}
+
 $("#btnİndirgenmisVeriArama").click(function() {
     if (onceki_dikdortgen_indirgenmis == null) {
         alert("lütfen bir alan seçiniz");
@@ -142,11 +159,31 @@ $("#btnİndirgenmisVeriArama").click(function() {
         type: "json"
     }).done(function (response) {
 
+        initIndirgenmisAramaMap(response);
+
     }).fail(function (response) {
         console.log("patladı");
     });
 });
 
+function initHamAramaMap(uluru) {
+
+    var map = new google.maps.Map(document.getElementById('hamAramaMap'), {
+        zoom: 3,
+        center: uluru[Math.floor((uluru.length) / 2)]
+    });
+
+    for (var i = 0; i < uluru.length; i++) {
+        var marker = new google.maps.Marker({
+            position: uluru[i],
+            map: map
+        });
+    }
+
+
+    $("#hamAramaSonucu").fadeIn(1000);
+
+}
 
 $("#btnHamVeriArama").click(function() {
     if (onceki_dikdortgen_ham == null) {
@@ -163,6 +200,8 @@ $("#btnHamVeriArama").click(function() {
         data: "= " + JSON.stringify({ 'kordinatlar': hamKordinatlar, 'limit': limit }),
         type: "json"
     }).done(function(response) {
+
+        initHamAramaMap(response);
 
     }).fail(function(response) {
         console.log("patladı");
