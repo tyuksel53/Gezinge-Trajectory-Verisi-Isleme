@@ -134,7 +134,7 @@ $("#btnİndirgenmisVeriArama").click(function() {
     }
     var limit = onceki_dikdortgen_indirgenmis.getBounds().getNorthEast() +
         " " +
-        onceki_dikdortgen_indirgenmis.getBounds().getNorthEast();
+        onceki_dikdortgen_indirgenmis.getBounds().getSouthWest();
     $.ajax({
         method: "POST",
         url: url + "/home/AramaIndirgenmis",
@@ -155,7 +155,7 @@ $("#btnHamVeriArama").click(function() {
     }
     var limit = onceki_dikdortgen_ham.getBounds().getNorthEast() +
         " " +
-        onceki_dikdortgen_ham.getBounds().getNorthEast();
+        onceki_dikdortgen_ham.getBounds().getSouthWest();
     
     $.ajax({
         method: "POST",
