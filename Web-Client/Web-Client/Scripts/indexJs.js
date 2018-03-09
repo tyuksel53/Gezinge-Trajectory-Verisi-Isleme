@@ -216,12 +216,14 @@ $("#dosyaYukle").ajaxForm({
         onceki_dikdortgen_ham = null;
         indirgenmisKordinatlar = null;
         hamKordinatlar = null;
-
+        $("#indirgemeOrani").hide();
+        $("#indirgemeOrani").empty();
         $("#fileUploadLoading").show();
     },
     complete: function (xhr) {
         $("#fileUploadLoading").hide();
         hamKordinatlar = JSON.parse(xhr.responseJSON);
+        console.log(hamKordinatlar.length);
         initHamMap(hamKordinatlar);
         getSimplifyedData(hamKordinatlar);
     }
@@ -236,7 +238,10 @@ function getSimplifyedData(coordinates) {
         data: "=" + JSON.stringify({ coordinates,'tolerans':$("#textboxTolerans").val() }),
         type: "json"
     }).done(function (response) {
-        indirgenmisKordinatlar = response;
+            indirgenmisKordinatlar = response; /*(1 - (indirgeme sonrası veri sayısı/ ham veri sayısı)) * 100 */
+        $("#indirgemeOrani")
+                .append("İndirgeme Orani: " + ((1 - (indirgenmisKordinatlar.length / hamKordinatlar.length)) * 100));
+        $("#indirgemeOrani").fadeIn(1000);
         initIndirgenmisMap(response);
     }).fail(function() {
         console.log("patladı");
