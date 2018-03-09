@@ -80,7 +80,7 @@ function getSimplifyedData(coordinates) {
     $.ajax({
         method: "POST",
         url: "http://localhost:56106/home/DataSimplify",
-        data: "=" + JSON.stringify(coordinates),
+        data: "=" + JSON.stringify({ coordinates,'tolerans':$("#textboxTolerans").val() }),
         type: "json"
     }).done(function (response) {
         initIndirgenmisMap(response);

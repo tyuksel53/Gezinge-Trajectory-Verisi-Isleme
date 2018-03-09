@@ -23,9 +23,17 @@
             </div>
             @using (Html.BeginForm("getLatLong", "Home", FormMethod.Post, new { id = "dosyaYukle", enctype = "multipart/form-data" }))
             {
-                <b>Dosya Seçin </b>
-                <input style="margin-top: 15px" id="uploadFile" name="uploadFile" class="form-control" type="file">
-                <input type="submit" id="btnFileUpload" name="btnFileUpload" value="Dosyadan Oku" style="margin-top: 15px" class="btn btn-primary">
+                <div class="form-group">
+                    <b>Dosya Seçin </b>
+                    <input style="margin-top: 15px" id="uploadFile" name="uploadFile" class="form-control" type="file">
+                </div>
+                <div class="form-group form-inline">
+                    <input type="submit" id="btnFileUpload" name="btnFileUpload" value="Dosyadan Oku" class="btn btn-primary">
+                    <input type="text" id="textboxTolerans" name="textboxTolerans" class="form-control" style="float:right" />
+                    <b style="float: right; margin-top: 6px;margin-right: 15px">Tolerans:</b>
+
+                </div>
+
             }
         </div>
     </div>

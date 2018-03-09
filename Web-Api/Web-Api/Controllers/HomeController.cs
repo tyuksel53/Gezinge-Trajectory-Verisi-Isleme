@@ -15,12 +15,8 @@ namespace Web_Api.Controllers
         [HttpGet]
         public HttpResponseMessage Tarih()
         {
-            List<Dictionary<string,string>> zundi = new List<Dictionary<string,string>>();
-            var kads = new Dictionary<string,string>();
-            kads.Add("mundi","zundi");
-            kads.Add("zundi","kundi");
-            kads.Add("kundi","yundi");
-            return Request.CreateResponse(HttpStatusCode.OK, kads );
+
+            return Request.CreateResponse(HttpStatusCode.OK, DateTime.Now.ToString("dd-MM-yyyy"));
         }
 
 
@@ -29,7 +25,11 @@ namespace Web_Api.Controllers
         {
             List<Coordinates> coordinates = new List<Coordinates>();
 
-            JArray a = JArray.Parse(data);
+            JObject myObject = JObject.Parse(data);
+
+            double tolerans = (double) myObject.SelectToken("tolerans");
+
+            JArray a = JArray.Parse(myObject.SelectToken("coordinates").ToString());
 
             foreach (JObject o in a.Children<JObject>())
             {
@@ -49,7 +49,8 @@ namespace Web_Api.Controllers
                 coordinates.Add(coordinate);
             }
 
-            var simplifiedData = VeriIndirge.SimplifyLine(coordinates, 1);
+
+            var simplifiedData = VeriIndirge.DouglasPeuckerReduction(coordinates, tolerans);
 
             return Request.CreateResponse(HttpStatusCode.OK, simplifiedData);
         }
