@@ -1,20 +1,21 @@
 ﻿
-$(document).ready(function() {
-    $.ajax({
-        method: "GET",
-        url: "http://localhost:56106/home/tarih"
+var url = "http://localhost:56106";
+var hamKordinatlar = null;
+var indirgenmisKordinatlar = null;
 
-    }).done(function(response) {
-        console.log(response);
-    });
+var onceki_dikdortgen_ham = null;
+var onceki_dikdortgen_indirgenmis = null;
+
+$(document).ready(function() {
+
 });
 
 
 function initIndirgenmisMap(data) {
 
     var map = new google.maps.Map(document.getElementById('indirgenmisMap'), {
-        zoom: 13,
-        center: data[0]
+        zoom: 3,
+        center: data[Math.floor( (data.length / 2) )]
     });
 
     for (var i = 0; i < data.length; i++) {
@@ -33,15 +34,49 @@ function initIndirgenmisMap(data) {
     });
 
     paths.setMap(map);
+
+    var drawingManagerIndirgenmis = new google.maps.drawing.DrawingManager({
+        drawingMode: google.maps.drawing.OverlayType.RECTANGLE,
+        drawingControl: true,
+        drawingControlOptions: {
+            position: google.maps.ControlPosition.TOP_CENTER,
+            drawingModes: ['rectangle']
+        },
+        rectangleOptions: {
+            strokeColor: '#38006b',
+            strokeWeight: 3.5,
+            fillColor: '#9c4dcc',
+            fillOpacity: 0.6,
+            editable: true,
+            draggable: true
+        }
+    });
+    drawingManagerIndirgenmis.setMap(map);
+
+    paths.setMap(map);
+
+    google.maps.event.addListener(drawingManagerIndirgenmis, 'rectanglecomplete', function (rectangle) {
+
+        if (onceki_dikdortgen_indirgenmis != null) {
+            onceki_dikdortgen_indirgenmis.setVisible(false);
+        }
+        onceki_dikdortgen_indirgenmis = rectangle;
+        var ne = rectangle.getBounds().getNorthEast();
+        var sw = rectangle.getBounds().getSouthWest();
+        console.log(ne + "\n" + sw);
+    });
+
+    $("#divIndirgenmisSection").fadeIn(1000);
+
 }
 
 function initHamMap(uluru) {
 
     var map = new google.maps.Map(document.getElementById('hamMap'), {
-        zoom: 13,
-        center: uluru[0]
+        zoom: 3,
+        center: uluru[ Math.floor( (uluru.length ) / 2)]
     });
-    console.log(uluru.length);
+
     for (var i = 0; i < uluru.length; i++) {
         var marker = new google.maps.Marker({
             position: uluru[i],
@@ -57,20 +92,99 @@ function initHamMap(uluru) {
         strokeWeight: 2
     });
 
+    var drawingManagerHam = new google.maps.drawing.DrawingManager({
+        drawingMode: google.maps.drawing.OverlayType.RECTANGLE,
+        drawingControl: true,
+        drawingControlOptions: {
+            position: google.maps.ControlPosition.TOP_CENTER,
+            drawingModes: ['rectangle']
+        },
+        rectangleOptions: {
+            strokeColor: '#38006b',
+            strokeWeight: 3.5,
+            fillColor: '#9c4dcc',
+            fillOpacity: 0.6,
+            editable: true,
+            draggable: true
+        }   
+    });
+    drawingManagerHam.setMap(map);
+
     paths.setMap(map);
+
+    google.maps.event.addListener(drawingManagerHam, 'rectanglecomplete', function (rectangle) {
+
+        if (onceki_dikdortgen_ham != null) {
+            onceki_dikdortgen_ham.setVisible(false);
+        }
+        onceki_dikdortgen_ham = rectangle;
+        var ne = rectangle.getBounds().getNorthEast();
+        var sw = rectangle.getBounds().getSouthWest();
+        console.log(ne + "\n" + sw);
+    });
+
+    $("#divHamSection").fadeIn(1000);
 
 }
 
+$("#btnİndirgenmisVeriArama").click(function() {
+    if (onceki_dikdortgen_indirgenmis == null) {
+        alert("lütfen bir alan seçiniz");
+        return;
+    }
+    var limit = onceki_dikdortgen_indirgenmis.getBounds().getNorthEast() +
+        " " +
+        onceki_dikdortgen_indirgenmis.getBounds().getNorthEast();
+    $.ajax({
+        method: "POST",
+        url: url + "/home/AramaIndirgenmis",
+        data: "= " + JSON.stringify({ 'kordinatlar': indirgenmisKordinatlar, 'limit': limit }),
+        type: "json"
+    }).done(function (response) {
+
+    }).fail(function (response) {
+        console.log("patladı");
+    });
+});
+
+
+$("#btnHamVeriArama").click(function() {
+    if (onceki_dikdortgen_ham == null) {
+        alert("lütfen bir alan seçiniz");
+        return;
+    }
+    var limit = onceki_dikdortgen_ham.getBounds().getNorthEast() +
+        " " +
+        onceki_dikdortgen_ham.getBounds().getNorthEast();
+    
+    $.ajax({
+        method: "POST",
+        url: url + "/home/AramaHam",
+        data: "= " + JSON.stringify({ 'kordinatlar': hamKordinatlar, 'limit': limit }),
+        type: "json"
+    }).done(function(response) {
+
+    }).fail(function(response) {
+        console.log("patladı");
+    });
+});
+
+
+
 $("#dosyaYukle").ajaxForm({
     beforeSend: function () {
+        onceki_dikdortgen_indirgenmis = null;
+        onceki_dikdortgen_ham = null;
+        indirgenmisKordinatlar = null;
+        hamKordinatlar = null;
+
         $("#fileUploadLoading").show();
     },
     complete: function (xhr) {
-        console.log(xhr);
-        console.log(xhr.responseJSON);
         $("#fileUploadLoading").hide();
-        initHamMap(JSON.parse(xhr.responseJSON));
-        getSimplifyedData(JSON.parse(xhr.responseJSON));
+        hamKordinatlar = JSON.parse(xhr.responseJSON);
+        initHamMap(hamKordinatlar);
+        getSimplifyedData(hamKordinatlar);
     }
 
 });
@@ -79,13 +193,14 @@ $("#dosyaYukle").ajaxForm({
 function getSimplifyedData(coordinates) {
     $.ajax({
         method: "POST",
-        url: "http://localhost:56106/home/DataSimplify",
+        url: url + "/home/DataSimplify",
         data: "=" + JSON.stringify({ coordinates,'tolerans':$("#textboxTolerans").val() }),
         type: "json"
     }).done(function (response) {
+        indirgenmisKordinatlar = response;
         initIndirgenmisMap(response);
     }).fail(function() {
-        console.log("sıçtı");
+        console.log("patladı");
     });
 
 }

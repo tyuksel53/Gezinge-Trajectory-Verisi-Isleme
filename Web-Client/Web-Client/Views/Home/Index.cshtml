@@ -39,13 +39,17 @@
     </div>
 </div>
 <div class="row">
-    <div class="col-md-6">
+
+    <div class="col-md-6" id="divHamSection" style="display: none">
         <h4 class="text-danger">Ham Veri</h4>
         <div id="hamMap"></div>
+        <button class="btn btn-success" id="btnHamVeriArama" style="float: right; margin-top: 15px"> Ham veri arama</button>
     </div>
-    <div class="col-md-6">
+
+    <div class="col-md-6" id="divIndirgenmisSection" style="display: none">
         <h4 class="text-success">İndirgenmiş Veri </h4>
         <div id="indirgenmisMap"></div>
+        <button class="btn btn-success" id="btnİndirgenmisVeriArama" style="float: right; margin-top: 15px"> İndirgenmis veri arama</button>
     </div>
 
 </div>
@@ -53,7 +57,7 @@
 @section scripts
 {
     <script async defer
-            src="https://maps.googleapis.com/maps/api/js?key=AIzaSyD6tfy97IexWdf_-9NrtJqQN2cPQvLzkgA">
+            src="https://maps.googleapis.com/maps/api/js?key=AIzaSyD6tfy97IexWdf_-9NrtJqQN2cPQvLzkgA&libraries=drawing">
     </script>
 
     <script src="~/Scripts/jquery.form.min.js"></script>
